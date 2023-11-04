@@ -22,12 +22,12 @@ public:
     
     explicit Schema(std::vector<ColumnInfo>&& columns);
 
-    inline static Schema
-    SelectFromSchema(const Schema& from, const std::vector<uint32_t>& attrs) {
+    inline Schema
+    select(const std::vector<uint32_t>& attrs) const {
         std::vector<ColumnInfo> cols;
         cols.reserve(attrs.size());
         for (const auto i : attrs) {
-            cols.emplace_back(from.columns_[i]);
+            cols.emplace_back(columns_[i]);
         }
         return Schema{std::move(cols)};
     }
@@ -47,6 +47,8 @@ public:
     inline bool
     inlined() const { return tuple_is_inlined_; }
 
+    /// @brief get the fixed size of a tuple
+    /// @return 
     inline uint32_t
     tuple_size() const { return tuple_size_; }
 

@@ -10,6 +10,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 #include <mutex>
 #include <queue>
 
@@ -25,23 +26,25 @@ public:
 
     ~DiskManager();
 
+    inline bool is_open() const;
+
     /// @brief wait for reqeust to be done and close the file.
     void shutdown();
 
     /// @brief synchronously proceesing the request
     /// @param request 
-    void perform(DiskRequest* request);
+    void perform(std::shared_ptr<DiskRequest> request);
 
     /// @brief asynchronously proceesing the request, this will immediately return
     /// @param request 
-    void schedule(DiskRequest* request);
+    void schedule(std::shared_ptr<DiskRequest> request);
 
 private:
     void* hfile_;
 
     RWLock file_rwlock_;
 
-    std::queue<DiskRequest*> req_queue_;
+    std::queue<std::shared_ptr<DiskRequest>> req_queue_;
 
     std::mutex req_queue_m_;
 };

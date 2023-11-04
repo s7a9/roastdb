@@ -16,10 +16,25 @@
 
 namespace roastdb {
 
+/* 
+ * PAGE LAYOUT
+ * | HEADER {page_type} | DATA |
+*/
+
+enum class PageType : uint8_t {
+    Empty = 0, BPTMeta, BPTNode, BPTLeaf, Invalid = -1,
+};
+
+struct PageMeta {
+    PageType type;
+};
+
 /// @brief `PageRef` is a reference to a frame in memory, which helps automatically
 /// manage pin count and rwlock.
 class PageRef {
 public:
+    static constexpr size_t HEADER_SIZE = sizeof(PageMeta);
+
     static constexpr bool READ = false, WRITE = true;
 
     DISALLOW_COPY(PageRef)
@@ -64,7 +79,10 @@ public:
     ~PageRef() { free_ref_(); }
 
     inline bool
-    valid() const { return frame_; }
+    valid() const { return frame_ != nullptr; }
+
+    inline table_id_t
+    table_id() const { return valid() ? frame_->table_id() : INVALID_TABLE_ID; }
 
     inline page_id_t
     page_id() const { return valid() ? frame_->page_id() : INVALID_PAGE_ID; }
@@ -73,18 +91,33 @@ public:
     frame_id() const { return frame_id_; }
 
     inline const data_ptr
-    read_data() const { return valid() ? frame_->data() : nullptr; }
+    read_data() const {
+        if (!valid()) return nullptr;
+        return frame_->data() + HEADER_SIZE;
+    }
 
     /// @brief NOTE: when this function is called, the frame will be dirty
     /// @return 
     inline data_ptr
     write_data() {
-        if (!frame_) return nullptr;
+        if (!valid()) return nullptr;
         if (!access_type_) {
             throw std::logic_error("write to a read-only PageRef");
         }
-        frame_->is_dirty_.store(true);
-        return frame_->data();
+        frame_->is_dirty_ = true;
+        return frame_->data() + HEADER_SIZE;
+    }
+
+    inline PageMeta*
+    meta() { 
+        if (!valid()) return nullptr;
+        return reinterpret_cast<PageMeta*>(frame_->data());
+    }
+
+    inline const PageMeta*
+    meta() const { 
+        if (!valid()) return nullptr;
+        return reinterpret_cast<const PageMeta*>(frame_->data());
     }
 
 private:

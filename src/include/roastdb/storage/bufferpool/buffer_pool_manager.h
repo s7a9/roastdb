@@ -11,6 +11,8 @@
 
 #include <list>
 #include <mutex>
+#include <memory>
+#include <vector>
 #include <unordered_map>
 
 #include "roastdb/storage/page/page.h"
@@ -31,26 +33,30 @@ public:
     inline size_t
     pool_size() const { return pool_size_; }
 
+    bool open_table_file(table_id_t table_id, const std::string& filename);
+
+    bool close_table_file(table_id_t table_id);
+
     /// @brief allocate a new page. return an invalid PageRef if unsuccessful
     /// @param access_type
     /// @return 
-    PageRef new_page(bool access_type);
+    PageRef new_page(table_id_t table_id, bool access_type);
 
     /// @brief fetch a page. this will wait for disk operation when buffer miss
     /// @param page_id 
     /// @param access_type 
     /// @return 
-    PageRef fetch_page(page_id_t page_id, bool access_type);
+    PageRef fetch_page(table_id_t table_id, page_id_t page_id, bool access_type);
 
     /// @brief ask the disk manager to fetch a page.
     /// @param page_id 
-    /// @return whether the disk request is posted successfully
-    bool prefetch_page(page_id_t page_id);
+    /// @return the disk request, you can check its status
+    std::shared_ptr<DiskRequest> prefetch_page(table_id_t table_id, page_id_t page_id);
 
-    /// @brief mannually flush a page into disk
+    /// @brief manually flush a page into disk
     /// @param page 
-    /// @return whether the disk request is posted successfully
-    bool flush_page(PageRef& page);
+    /// @return the disk request, you can check its status
+    std::shared_ptr<DiskRequest> flush_page(PageRef& page);
 
     bool delete_page(PageRef&& page);
 
@@ -61,7 +67,7 @@ private:
 
     Frame *frames_;
 
-    DiskManager* disk_manager_;
+    std::unordered_map<table_id_t, std::unique_ptr<DiskManager>> disk_managers_;
 
     std::unordered_map<page_id_t, frame_id_t> page_table_;
 

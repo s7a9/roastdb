@@ -17,7 +17,6 @@
 namespace roastdb {
 
 /// @brief `ColumnInfo` stores the location of a certain column in tuple.
-/// A `ColumnInfo` instance must not live longer than its `Scheme` instance.
 class ColumnInfo {
     friend class Schema;
 
@@ -57,6 +56,10 @@ public:
         column_type_(other.column_type_),
         column_size_(other.column_size_),
         column_offset_(other.column_offset_) {}
+
+    /// @brief deserialize from bytes
+    /// @param col_data 
+    ColumnInfo(const data_ptr col_data);
     
     inline TypeID
     type() const { return column_type_; }
@@ -72,6 +75,10 @@ public:
 
     inline const std::string&
     name() const { return column_name_; }
+
+    static constexpr size_t SERIALIZE_SIZE = (sizeof(TypeID) + sizeof(uint32_t) + NAME_LENGTH_MAX);
+
+    inline void serialize(data_ptr to) const; 
 
 private:
     std::string column_name_;

@@ -30,8 +30,11 @@ public:
     inline page_id_t
     page_id() const { return page_id_; }
 
+    inline table_id_t
+    table_id() const { return table_id_; }
+
     inline bool
-    dirty() const { return is_dirty_.load(); }
+    dirty() const { return is_dirty_; }
 
     inline int32_t
     pin_count() { return pin_count_.load(); }
@@ -47,9 +50,11 @@ private:
 
     page_id_t page_id_{INVALID_PAGE_ID};
 
-    std::atomic_bool is_dirty_;
+    table_id_t table_id_{INVALID_TABLE_ID};
 
-    std::atomic_int32_t pin_count_;
+    bool is_dirty_{false};
+
+    std::atomic_int32_t pin_count_{0};
 
     RWLock rwlock_;
 };
