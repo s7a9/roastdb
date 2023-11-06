@@ -76,12 +76,16 @@ public:
     inline const IndexDerive&
     as() const { return reinterpret_cast<const IndexDerive&>(*this); }
 
+    inline RWLock& lock() { return lock_; }
+
 protected:
     inline BufferPoolManager&
     bufferpool() { return bufferpool_; }
 
     inline const Schema&
     key_schema() const { return key_schema_; }
+
+    RWLock lock_;
 
     IndexType index_type_;
     

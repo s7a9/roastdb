@@ -17,8 +17,8 @@
 
 namespace roastdb {
 
-/// @brief A persist catalog that bookkeeps meta info of physical tables and 
-/// secondary indexes. Some of the functions are non-blocking, so the caller
+/// @brief A persist catalog that keeps physical tables and secondary indexes.
+/// Some of the functions are non-blocking, so the caller
 /// must acquire a lock guared fist.
 class Catalog {
 public:

@@ -18,7 +18,7 @@ namespace roastdb {
 
 class Value {
 public:
-    DISALLOW_COPY(Value)
+    Value(const Value& other);
 
     Value(Value&& other):
         type_(other.type_) {
@@ -70,6 +70,9 @@ public:
         other.type_ = TypeID::INVALID;
         memset(other.data_, 0, sizeof(data_));
     }
+
+    Value&
+    operator=(const Value& other);
 
     inline ~Value() { release_(); }
 

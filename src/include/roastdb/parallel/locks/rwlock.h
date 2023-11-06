@@ -39,44 +39,28 @@ private:
 
 class ReadGuard {
 public:
-    DISALLOW_COPY(ReadGuard);
+    DISALLOW_COPY(ReadGuard)
+    DISALLOW_MOVE(ReadGuard)
 
-    inline
-    ReadGuard(): lock_(nullptr) {}
+    inline ReadGuard(RWLock& lock): lock_(lock) { lock_.RLock(); }
 
-    inline
-    ReadGuard(ReadGuard&& other):
-        lock_(other.lock_) { other.lock_ = nullptr; }
-
-    inline 
-    ReadGuard(RWLock& lock): lock_(&lock) { lock_->RLock(); }
-
-    inline 
-    ~ReadGuard() { if (lock_) lock_->RUnlock(); }
+    inline ~ReadGuard() { lock_.RUnlock(); }
 
 private:
-    RWLock* lock_;
+    RWLock& lock_;
 };
 
 class WriteGuard {
 public:
-    DISALLOW_COPY(WriteGuard);
+    DISALLOW_COPY(WriteGuard)
+    DISALLOW_MOVE(WriteGuard)
 
-    inline 
-    WriteGuard(): lock_(nullptr) {}
+    inline WriteGuard(RWLock& lock): lock_(lock) { lock_.WLock(); }
 
-    inline 
-    WriteGuard(WriteGuard&& other):
-        lock_(other.lock_) { other.lock_ = nullptr; }
-
-    inline 
-    WriteGuard(RWLock& lock): lock_(&lock) { lock_->WLock(); }
-
-    inline 
-    ~WriteGuard() { if (lock_) lock_->WUnlock(); }
+    inline ~WriteGuard() { lock_.WUnlock(); }
 
 private:
-    RWLock* lock_;
+    RWLock& lock_;
 };
 
 }
