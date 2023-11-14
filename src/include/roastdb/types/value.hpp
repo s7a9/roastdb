@@ -17,6 +17,12 @@
 namespace roastdb {
 
 class Value {
+    inline
+    Value(TypeID type, const void* src, size_t length):
+        type_(type) {
+        memcpy_s(&data_, sizeof(data_), src, length);
+    }
+
 public:
     Value(const Value& other);
 
@@ -25,12 +31,6 @@ public:
         memcpy(data_, other.data_, sizeof(data_));
         other.type_ = TypeID::INVALID;
         memset(other.data_, 0, sizeof(data_));
-    }
-
-    inline
-    Value(TypeID type, const void* src, size_t length):
-        type_(type) {
-        memcpy_s(&data_, sizeof(data_), src, length);
     }
 
     template <class ScourceType>
@@ -52,7 +52,7 @@ public:
     }
 
     template <class DestType>
-    inline DestType&
+    inline DestType
     as() const {
         constexpr TypeID type_id = type_utils::get_type_id<ScourceType>();
         if (type_id != type_) {
@@ -69,10 +69,20 @@ public:
         memcpy(data_, other.data_, sizeof(data_));
         other.type_ = TypeID::INVALID;
         memset(other.data_, 0, sizeof(data_));
+        return *this;
     }
 
     Value&
-    operator=(const Value& other);
+    operator=(const Value& other) {
+        if (this == &other) return *this;
+        release_();
+        type_ = other.type_;
+        if (type_ == TypeID::CHAR) {
+            throw std::logic_error("Value::operator= not implemented for string");
+        }
+        memcpy(data_, other.data_, sizeof(data_));
+        return *this;
+    }
 
     inline ~Value() { release_(); }
 
@@ -81,6 +91,7 @@ private:
         if (type_ == TypeID::CHAR) {
             delete[] as<char*>();
         }
+        type_ = TypeID::INVALID;
     }
 
     TypeID type_;

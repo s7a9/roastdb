@@ -35,6 +35,8 @@ public:
 
         bool is_null(column_id_t column_id) const;
 
+        hash_t hash_at(column_id_t column_id) const;
+
         /// @brief this function is for moving the tuple ptr to
         /// another location in one page
         /// @param rid 
@@ -60,7 +62,7 @@ public:
         meta_page_(std::move(meta_page)) {
         // NOTE: meta_page has been moved to meta_page_
         primary_index_ = std::make_unique<BPTIndexEngine>(
-            "__primary_key_" + name(),
+            "__primary_index_" + name(),
             table_id_,
             schema(),
             meta_page_.key_attrs(),

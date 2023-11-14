@@ -32,10 +32,10 @@ public:
             table_id,
             table_schema,
             key_attrs,
-            IndexType::BPlusTreeIndex,
-            bufferpool
+            IndexType::BPlusTreeIndex
         ),
-        bpt_root_page_id_(bpt_root_page_id) {}
+        bpt_root_page_id_(bpt_root_page_id),
+        bufferpool_(bufferpool) {}
     
     /// @brief insert a tuple into the table
     /// @param tuple [in] has the same schema as tuples in this table
@@ -68,6 +68,8 @@ public:
 
 private:
     page_id_t& bpt_root_page_id_;
+
+    BufferPoolManager& bufferpool_;
 };
 
 }

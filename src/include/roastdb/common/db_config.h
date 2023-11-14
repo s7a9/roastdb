@@ -25,6 +25,7 @@ using lsn_t         = int32_t;
 using slot_offset_t = int32_t;
 using oid_t         = uint16_t;
 using index_id_t    = int32_t;
+using hash_t        = uint64_t;
 
 /// @brief the universial record identifier
 using RID = uint64_t;

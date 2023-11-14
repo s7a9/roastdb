@@ -35,20 +35,18 @@ public:
     /// @param table_schema 
     /// @param key_attrs mark which columns are the keys
     /// @param index_type 
-    IndexEngine(
-        const std::string& name,
+    inline IndexEngine(
+        std::string&& name,
         table_id_t table_id,
         const Schema& table_schema,
         const std::vector<uint32_t>& key_attrs,
-        IndexType index_type,
-        BufferPoolManager& bufferpool
+        IndexType index_type
     ):  index_type_(index_type),
         table_id_(table_id),
         table_schema_(table_schema),
         index_name_(name),
         key_schema_(table_schema.select(key_attrs)),
-        key_attrs_(key_attrs),
-        bufferpool_(bufferpool) {}
+        key_attrs_(key_attrs){}
 
     inline const std::string&
     name() const { return index_name_; }
@@ -79,9 +77,6 @@ public:
     inline RWLock& lock() { return lock_; }
 
 protected:
-    inline BufferPoolManager&
-    bufferpool() { return bufferpool_; }
-
     inline const Schema&
     key_schema() const { return key_schema_; }
 
@@ -99,8 +94,6 @@ protected:
     
     /// @brief corresponding col_id in the original table
     std::vector<uint32_t> key_attrs_;
-
-    BufferPoolManager& bufferpool_;
 };
 
 }
