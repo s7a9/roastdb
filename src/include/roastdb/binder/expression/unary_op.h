@@ -12,7 +12,7 @@
 #include <string>
 #include <memory>
 #include <utility>
-#include "BaseExpression.h"
+#include "binder/BaseExpression.h"
 
 namespace roastdb {
 

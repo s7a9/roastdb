@@ -1,7 +1,7 @@
 /*******************************************************\
  *                    Roast DB
  * 
- *  src/include/roastdb/binder/expression/BaseExpression.h
+ *  src/include/roastdb/binder/BaseExpression.h
  * 
  *  GPL-3.0 license
  * 

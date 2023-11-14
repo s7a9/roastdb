@@ -11,7 +11,7 @@
 
 #include <string>
 #include <memory>
-#include "BaseExpression.h"
+#include "binder/BaseExpression.h"
 #include "types/value.hpp"
 
 namespace roastdb{
