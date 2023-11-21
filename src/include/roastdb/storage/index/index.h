@@ -14,7 +14,7 @@
 #include "roastdb/common/db_config.h"
 #include "roastdb/catalog/schema.h"
 #include "roastdb/storage/table/tuple.h"
-#include "roastdb/storage/bufferpool/buffer_pool_manager.h"
+#include "roastdb/parallel/locks/rwlock.h"
 
 namespace roastdb {
 

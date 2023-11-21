@@ -24,7 +24,7 @@ namespace roastdb {
 
 /// @brief this class serves as an specalized interpreter of a bpt meta page.
 /// a BPTMetaPage instance would hold PageRef in its life cycle so that the page
-/// will not be unexceptedly changed by others.
+/// will not be unexpectedly changed by others.
 class BPTMetaPage {
 public:
     DISALLOW_COPY(BPTMetaPage)

@@ -41,7 +41,12 @@ public:
 
     State state() const { return state_; }
 
-    inline void begin_ope(State state) { state_ = state; }
+    inline void begin_ope(State state) {
+        state_ = state;
+        if (state_ == State::Writing) {
+            tuples_.clear();
+        }
+    }
 
     inline void end_ope() {
         if (state_ == State::Writing) {

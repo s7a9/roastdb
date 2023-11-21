@@ -120,6 +120,12 @@ public:
         return reinterpret_cast<const PageMeta*>(frame_->data());
     }
 
+    inline void
+    release() { 
+        free_ref_();
+        frame_ = nullptr;
+    }
+
 private:
     inline void free_ref_() {
         if (!valid()) return;

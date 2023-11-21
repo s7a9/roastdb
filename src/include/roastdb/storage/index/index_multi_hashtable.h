@@ -20,12 +20,12 @@ namespace roastdb {
 class MultiHashIndexEngine : public IndexEngine {
 public:
     MultiHashIndexEngine(
-        const std::string& name,
+        std::string&& name,
         table_id_t table_id,
         const Schema& table_schema,
         const std::vector<uint32_t>& key_attrs
     ):  IndexEngine(
-            name,
+            std::move(name),
             table_id,
             table_schema,
             key_attrs,
@@ -45,9 +45,9 @@ public:
 
     /// @brief remove a tuple in the table
     /// @param key [in]
-    /// @param value [in]
+    /// @param rid [in]
     /// @return is successful
-    bool remove(const Tuple& key, const Tuple& value);
+    bool remove(const Tuple& key, RID rid);
 
 private:
     std::unordered_multimap<hash_t, RID> hashtable_;

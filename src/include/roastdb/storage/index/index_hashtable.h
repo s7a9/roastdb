@@ -23,12 +23,12 @@ namespace roastdb {
 class HashIndexEngine : public IndexEngine {
 public:
     HashIndexEngine(
-        const std::string& name,
+        std::string&& name,
         table_id_t table_id,
         const Schema& table_schema,
         const std::vector<uint32_t>& key_attrs
     ):  IndexEngine(
-            name,
+            std::move(name),
             table_id,
             table_schema,
             key_attrs,

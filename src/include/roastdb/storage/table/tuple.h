@@ -53,7 +53,7 @@ protected:
     const Schema& schema_;
 };
 
-/// @brief The actual tuple stored in memory. Note that this class
+/// @brief The tuple stored in memory. Note that this class
 /// stores data in itself, not like others which are references.
 class _MaterializedTuple : public Tuple {
 public:
@@ -97,7 +97,7 @@ public:
     /// @brief set the value at the column
     /// @param column_id 
     /// @param value 
-    void set_at(column_id_t column_id, const Value& value);
+    void set_at(column_id_t column_id, Value&& value);
 
     /// @brief set the tuple as removed
     void remove();

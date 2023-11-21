@@ -11,24 +11,24 @@
 
 #include "roastdb/storage/page/page.h"
 #include "roastdb/storage/index/index.h"
+#include "roastdb/storage/bufferpool/bufferpool_manager.h"
 
 namespace roastdb {
 
 class BPTIndexEngine : public IndexEngine {
 public:
     /// @brief ScanIterator is a wrapper of node scan operation.
-    /// It holds a read lock of the entire table.
     class ScanIterator {};
 
     BPTIndexEngine(
-        const std::string& name,
+        std::string&& name,
         table_id_t table_id,
         const Schema& table_schema,
         const std::vector<uint32_t>& key_attrs,
         BufferPoolManager& bufferpool,
         page_id_t& bpt_root_page_id
     ):  IndexEngine(
-            name,
+            std::move(name),
             table_id,
             table_schema,
             key_attrs,
